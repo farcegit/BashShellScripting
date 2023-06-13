@@ -1,29 +1,45 @@
 function checkOptions(){
 while getopts "om" opt; do
     case $opt in
-        o) listAllFiles 'o' $2;;
-        m) listAllFiles 'm' $2;;
+        o) listFilterFiles 'o' $2;;
+        m) listFilterFiles 'm' $2;;
+        \?) 
     esac
  done
 }
 
-function listAllFiles(){
+function listFilterFiles(){
 filenames=`ls ./`
 for filename in $filenames
 do
-   if ( [ $1 == "o" ] && [ `functionIsOwner` == "true" ] ) || ( [ $1 == "m" ] && [ `functionIsMonth` == "true" ] )
+   if ( [ $1 == "o" ] && [ `isOwner $filename $2` == 1 ] ) || ( [ $1 == "m" ] && [ `isMonth $filename $2` == 1 ] )
    then 
-    echo -e "File : $filename, Lines: `wc -l < $filename`"
+        echo -e "File : $filename, Lines: `wc -l < $filename`"
     fi
 done
 }
 
-functionIsOwner(){
-    echo "true"
+isOwner(){
+    if [ $2 == `stat --format "%U" $1` ]
+    then
+        echo 1
+    else
+        echo 0
+    fi
 }
 
-functionIsMonth(){
-    echo "true"
+isMonth(){
+    if [ $2 == `ls -l $1 | awk -F " " '{print $6}'` ]
+    then
+        echo 1
+    else
+        echo 0
+    fi
 }
 
-checkOptions $@ $2
+if [ $# == 2 ]
+then 
+    checkOptions $@ $2
+else
+    echo "Invalid Arguments"
+fi
