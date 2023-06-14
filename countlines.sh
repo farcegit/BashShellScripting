@@ -3,7 +3,7 @@ while getopts "om" opt; do
     case $opt in
         o) listFilterFiles $opt $2;;
         m) listFilterFiles $opt $2;;
-        \?) 
+        \?) showHelp;;
     esac
  done
 }
@@ -37,9 +37,13 @@ isMonth(){
     fi
 }
 
+showHelp(){
+    echo "Invalid Arguments, Valid options are -o follow by the owner user name and -m follow by the month in the mmm format."
+}
+
 if [ $# == 2 ]
 then 
     checkOptions $@ $2
 else
-    echo "Invalid Arguments"
+    showHelp
 fi
