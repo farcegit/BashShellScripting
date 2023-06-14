@@ -1,8 +1,8 @@
 function checkOptions(){
 while getopts "om" opt; do
     case $opt in
-        o) listFilterFiles 'o' $2;;
-        m) listFilterFiles 'm' $2;;
+        o) listFilterFiles $opt $2;;
+        m) listFilterFiles $opt $2;;
         \?) 
     esac
  done
